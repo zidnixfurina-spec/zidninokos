@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>ZidniNokos — Nomor Virtual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f8fafc; --surface:#ffffff; --surface-2:#f1f5f9; --line:#e2e8f0;
+  --fg:#0f172a; --muted:#64748b; --accent:#2563eb; --accent-fg:#ffffff; --accent-soft:#eff6ff;
+  --bar:#ffffff; --bar-fg:#0f172a;
+  --font-display:"Space Grotesk",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{max-width:100%;width:100%;overflow-x:clip;overscroll-behavior-x:none;touch-action:pan-y;margin:0;padding:0;font-family:var(--font-body);font-size:14px;line-height:1.5;background:var(--bg);color:var(--fg);padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:600px;margin:0 auto;width:100%;padding:0 16px;padding-top:env(safe-area-inset-top,0px);}
+
+/* ============ HEADER & NAV ============ */
+header.top-bar{
+  position:sticky;top:0;z-index:20;background:var(--surface);color:var(--fg);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 16px;border-bottom:1px solid var(--line);
+  margin:0 -16px; width:calc(100% + 32px);
+}
+.brand{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;}
+.brand .icon-logo{width:40px;height:40px;flex:none;border-radius:8px;background:#fff;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);}
+.brand .icon-logo img{width:100%;height:100%;object-fit:cover;}
+.brand .txt{display:flex;flex-direction:column;}
+.brand .name{line-height:1.1;}
+.brand small{font-family:var(--font-body);font-weight:500;font-size:10px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase;}
+.nav-toggle{background:none;border:none;padding:8px;display:flex;flex-direction:column;gap:4px;cursor:pointer;}
+.nav-toggle span{display:block;width:22px;height:2px;background:var(--fg);border-radius:2px;transition:0.2s}
+
+/* ============ PAGE SECTIONS ============ */
+.page-section{padding:20px 0;display:grid;gap:24px;animation:fadeIn 0.3s ease-in-out}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============ SLIDER ============ */
+.slider-wrapper{position:relative;border-radius:16px;overflow:hidden;background:var(--surface-2);margin-top:10px;}
+.slider-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;}
+.slider-track::-webkit-scrollbar{display:none;}
+.slide{flex:0 0 100%;scroll-snap-align:center;aspect-ratio:16/9;position:relative}
+.slide img{width:100%;height:100%;object-fit:cover;display:block;}
+.slider-controls{display:flex;justify-content:center;align-items:center;gap:12px;padding:12px;}
+.sdot-wrap{display:flex;gap:4px;}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:0.2s}
+.sdot.active{width:24px;border-radius:4px;background:var(--accent);}
+.slider-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--muted);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.slider-btn:hover{color:var(--accent);border-color:var(--accent)}
+.slider-btn svg{width:14px;height:14px}
+
+/* ============ CARD BASE ============ */
+.card{background:var(--surface);border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.02);border:1px solid var(--line);display:grid;gap:12px;}
+.card-h{display:flex;justify-content:space-between;align-items:center;}
+.card-h h2{font-family:var(--font-display);font-size:16px;margin:0;color:var(--fg);}
+.card-h p{margin:4px 0 0;font-size:12px;color:var(--muted);}
+.pill{background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;}
+
+/* ============ JELAJAHI NEGARA & TRENDING ============ */
+.country-grid, .trend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
+.country-card,.trend-card{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;}
+.country-card:hover,.trend-card:hover{border-color:var(--accent);background:var(--accent-soft);}
+.country-card .flag{font-size:28px;margin-bottom:6px;}
+.country-card b{display:block;font-size:13px;font-weight:600;}
+.country-card small{display:block;font-size:10px;color:var(--muted);}
+.trend-card .logo-box{width:32px;height:32px;border-radius:8px;background:#fff;padding:4px;box-shadow:0 1px 3px rgba(0,0,0,.1);margin-bottom:6px;}
+.trend-card .logo-box img,.trend-card .logo-box svg{width:100%;height:100%;object-fit:contain}
+.trend-card b{font-size:12px;font-weight:600;display:block;line-height:1.2}
+.trend-card small{display:block;font-size:10px;color:var(--muted);margin-top:2px;}
+.trend-card .price{margin-top:auto;padding-top:6px;font-size:12px;color:var(--accent);font-weight:700;}
+
+/* ============ CONTROLS & LIST ============ */
+.controls{display:flex;gap:8px;flex-direction:column;}
+.search{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:12px 14px;font:inherit;min-width:0;outline:none;}
+.search:focus{border-color:var(--accent)}
+
+/* GRID 2 KOLOM UNTUK APK DAN NEGARA */
+.chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:520px;overflow-y:auto;overflow-x:hidden;padding:2px;margin-top:4px;}
+.chip{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px;min-width:0;transition:.15s;width:100%;}
+.chip:hover{border-color:var(--accent);}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);}
+.logo-svc{flex:none;width:32px;height:32px;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);padding:4px;}
+.logo-svc svg,.logo-svc img{width:100%;height:100%;display:block;object-fit:contain;}
+.chip .txt{min-width:0;overflow:hidden;flex-grow:1;}
+.chip b{display:block;font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2;}
+.chip span.sub{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+
+/* NEGARA 2 KOLOM */
+.rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:520px;overflow-y:auto;overflow-x:hidden;padding:2px;-webkit-overflow-scrolling:touch;}
+.row{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;min-width:0;}
+.row .l{display:flex;align-items:center;gap:8px;min-width:0;margin-bottom:8px;width:100%;}
+.row .flag{font-size:24px;flex:none;line-height:1;}
+.row .nm{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-grow:1;}
+.row .foot{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;}
+.price{font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;color:var(--accent);}
+.buy{border:0;background:var(--accent);color:var(--accent-fg);font-weight:600;border-radius:8px;padding:6px 12px;font-size:12px;flex:none;transition:.15s}
+.buy:hover{filter:brightness(1.1)}
+.empty{color:var(--muted);padding:30px 16px;text-align:center;font-size:14px;background:var(--surface-2);border-radius:12px;border:1px dashed var(--line);grid-column:1/-1;}
+.more{border:1px dashed var(--line);background:transparent;border-radius:10px;padding:10px;color:var(--muted);font-weight:500;font-size:13px;width:100%;}
+
+/* ============ BANTUAN & KOMUNITAS ============ */
+.help-item, .comm-item{display:flex;align-items:center;gap:14px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:.15s;text-decoration:none;color:inherit;margin-bottom:12px;}
+.help-item:hover, .comm-item:hover{background:var(--surface-2);border-color:var(--accent)}
+.help-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none}
+.help-icon.wa{background:#25D366}
+.help-icon.channel{background:#1666ff}
+.help-icon.info{background:#f59e0b}
+.help-icon.doc{background:#8b5cf6}
+.help-icon.depo{background:#2563eb}
+.help-item div b, .comm-item div b{display:block;font-size:14px;}
+.help-item div span, .comm-item div span{display:block;font-size:12px;color:var(--muted);}
+
+/* ============ BOTTOM NAV ============ */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:var(--surface);border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;align-items:center;
+  padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -2px 10px rgba(0,0,0,.03);
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  border:0;background:none;color:var(--muted);padding:6px 10px;border-radius:10px;cursor:pointer;transition:.15s;font-size:11px;font-weight:500;min-width:60px;
+}
+.nav-item svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.nav-item.active{color:var(--accent);background:var(--accent-soft);}
+.nav-item:hover{color:var(--accent);}
+
+/* ============ DIALOG ============ */
+dialog{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:18px;padding:0;width:min(440px,calc(100vw - 32px));box-shadow:0 10px 40px rgba(0,0,0,.15);}
+dialog::backdrop{background:rgba(0,0,0,.5);backdrop-filter:blur(3px);}
+.dlg{padding:22px;display:grid;gap:16px;}
+.dlg h3{font-family:var(--font-display);margin:0;font-size:20px;}
+.sum{display:grid;gap:8px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface-2);font-size:13.5px;}
+.sum div{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums;}
+.sum .tot{border-top:1px solid var(--line);padding-top:10px;font-weight:700;font-size:16px;margin-top:4px;}
+.sum span:first-child{color:var(--muted);}
+.sum .tot span:first-child{color:var(--fg);}
+.paket-label{font-size:13px;font-weight:600;display:block;margin-bottom:8px;}
+.paket-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.paket{position:relative;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;text-align:left;cursor:pointer;display:grid;gap:4px;transition:.15s;}
+.paket:hover{border-color:var(--accent);}
+.paket[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent) inset;}
+.paket .pname{font-weight:700;font-size:13px;}
+.paket .padd{font-size:11.5px;color:var(--muted);}
+.paket .padd.free{color:#16a34a;font-weight:600;}
+.link-input{width:100%;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);border-radius:10px;padding:12px 14px;font:inherit;min-width:0;margin-top:4px;outline:none;}
+.link-input:focus{border-color:var(--accent)}
+.err-text{color:#dc2626;font-size:12px;display:none;margin-top:4px;}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+.acts button,.acts a{flex:1;text-align:center;text-decoration:none;border-radius:10px;padding:12px 14px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);min-width:110px;font-size:14px;transition:.15s}
+.acts .wa-btn{background:#25D366;color:#fff;border-color:#25D366;}
+.acts .wa-btn:hover{filter:brightness(1.1)}
+.acts button:hover{background:var(--line)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- HEADER -->
+  <header class="top-bar">
+    <div class="brand">
+      <div class="icon-logo">
+        <img src="https://i.postimg.cc/d1PxZwXy/IMG-20261112-200243.jpg" alt="ZidniNokos">
+      </div>
+      <div class="txt">
+        <div class="name">ZidniNokos</div>
+        <small>Nomor Virtual</small>
+      </div>
+    </div>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ================= HALAMAN HOME ================= -->
+  <section id="page-home" class="page-section">
+    <div class="slider-wrapper">
+      <div class="slider-track" id="sliderTrack"></div>
+      <div class="slider-controls">
+        <div class="sdot-wrap" id="sliderDots"></div>
+        <button class="slider-btn" id="btnPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="slider-btn" id="btnNext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <div><h2>Jelajahi negara</h2><p>Pilih negara tujuan verifikasi</p></div>
+        <span class="pill">Populer</span>
+      </div>
+      <div class="country-grid">
+        <div class="country-card" onclick="goToNokos('Indonesia')">
+          <span class="flag">🇮🇩</span><b>Indonesia</b><small>6 layanan</small>
+        </div>
+        <div class="country-card" onclick="goToNokos('United States')">
+          <span class="flag">🇺🇸</span><b>USA</b><small>6 layanan</small>
+        </div>
+        <div class="country-card" onclick="goToNokos('United Kingdom')">
+          <span class="flag">🇬🇧</span><b>United Kingdom</b><small>5 layanan</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">
+        <div><h2>Sedang trending</h2><p>Aplikasi yang sering dicari</p></div>
+        <span class="pill">Trending</span>
+      </div>
+      <div class="trend-grid">
+        <div class="trend-card" onclick="goToNokos('Indonesia')">
+          <div class="logo-box" id="trend-logo-shopee"></div>
+          <div><b>Shopee</b><small>Indonesia</small></div>
+          <div class="price">Cek harga</div>
+        </div>
+        <div class="trend-card" onclick="goToNokos('Indonesia')">
+          <div class="logo-box" id="trend-logo-dana"></div>
+          <div><b>Dana</b><small>Pilih negara</small></div>
+          <div class="price">Cek harga</div>
+        </div>
+        <div class="trend-card" onclick="goToNokos('Indonesia')">
+          <div class="logo-box" id="trend-logo-telegram"></div>
+          <div><b>Telegram</b><small>Indonesia</small></div>
+          <div class="price">Cek harga</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="flex-direction:row;align-items:center;justify-content:space-between;background:linear-gradient(135deg, #f0fdf4, #dcfce7);border-color:#bbf7d0;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#22c55e;color:#fff;display:grid;place-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div>
+          <h2 style="margin:0;font-size:14px;">Status Sistem</h2>
+          <p style="margin:0;font-size:12px;color:#15803d">Pembaruan Baru saja</p>
+        </div>
+      </div>
+      <span class="pill" style="background:#bbf7d0;color:#15803d;">NORMAL</span>
+    </div>
+
+    <!-- SECTION KOMUNITAS DI HOME -->
+    <div class="card">
+      <div class="card-h">
+        <div><h2>Komunitas</h2><p>Gabung untuk info dan promo terbaru</p></div>
+      </div>
+      <a class="comm-item" href="https://chat.whatsapp.com/Juri7EdvfEwHfjsfNhuhh4?s=cl&p=a&iam=2" target="_blank" rel="noopener">
+        <div class="help-icon channel" style="background:#25D366">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div><b>Grup WhatsApp</b><span>Diskusi & Info Admin</span></div>
+      </a>
+      <a class="comm-item" href="https://whatsapp.com/channel/0029Vb9Iuwn1nozF197w7i3u" target="_blank" rel="noopener">
+        <div class="help-icon channel" style="background:#1666ff">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M15 9l-5 3 5 3"/></svg>
+        </div>
+        <div><b>Saluran WhatsApp</b><span>Update info & promo terbaru</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ================= HALAMAN NOKOS ================= -->
+  <section id="page-nokos" class="page-section" hidden>
+    <div style="margin-bottom:16px;">
+      <h1 style="font-family:var(--font-display);font-size:24px;margin:0 0 6px 0;">Beli Nomor</h1>
+      <p style="color:var(--muted);margin:0;font-size:13px;">Pilih layanan, negara, lalu paket Hemat, Biasa, atau Premium.</p>
+    </div>
+
+    <!-- PILIH LAYANAN -->
+    <div class="card" style="padding:16px;">
+      <div class="card-h" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:4px;height:18px;background:var(--accent);border-radius:2px;"></div>
+          <h2 style="font-size:15px;">Pilih Layanan</h2>
+        </div>
+        <span class="pill" id="svcCount">1347 layanan</span>
+      </div>
+      <p style="margin:0 0 10px 0;font-size:12px;color:var(--muted);">Pilih layanan yang ingin digunakan</p>
+      
+      <input class="search" id="svcSearch" type="search" placeholder="🔍 Cari layanan..." autocomplete="off" style="margin-bottom:12px;">
+      
+      <div class="chips" id="svcList"></div>
+      <button class="more" id="svcMore" type="button" hidden></button>
+    </div>
+
+    <!-- PILIH NEGARA -->
+    <div class="card" id="countryPane" style="padding:16px;">
+      <div class="card-h" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:4px;height:18px;background:var(--accent);border-radius:2px;"></div>
+          <h2 id="cTitle" style="font-size:15px;">Pilih Negara</h2>
+        </div>
+        <span class="pill" id="cCount" style="display:none;">0 negara</span>
+      </div>
+      
+      <div id="cEmpty" class="empty">
+        Pilih layanan di atas.
+      </div>
+
+      <div id="cContent" hidden>
+        <input class="search" id="cSearch" type="search" placeholder="Cari negara..." autocomplete="off" style="margin-bottom:12px;">
+        <div class="rows" id="cList"></div>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px;" id="cNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HALAMAN DEPOSIT ================= -->
+  <section id="page-deposit" class="page-section" hidden>
+    <div style="margin-bottom:16px;">
+      <h1 style="font-family:var(--font-display);font-size:24px;margin:0 0 6px 0;">Deposit Saldo</h1>
+      <p style="color:var(--muted);margin:0;font-size:13px;">Isi saldo untuk pembelian otomatis via API.</p>
+    </div>
+
+    <div class="card" style="padding:20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <div class="help-icon depo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+        </div>
+        <div>
+          <h2 style="margin:0;font-size:16px;">Top Up Saldo</h2>
+          <p style="margin:0;font-size:12px;color:var(--muted)">Pilih nominal deposit</p>
+        </div>
+      </div>
+
+      <div class="chips" style="grid-template-columns:repeat(3,1fr);">
+        <button class="chip" style="justify-content:center;padding:12px;" onclick="pilihNominal(10000)">Rp10.000</button>
+        <button class="chip" style="justify-content:center;padding:12px;" onclick="pilihNominal(20000)">Rp20.000</button>
+        <button class="chip" style="justify-content:center;padding:12px;" onclick="pilihNominal(50000)">Rp50.000</button>
+        <button class="chip" style="justify-content:center;padding:12px;" onclick="pilihNominal(100000)">Rp100.000</button>
+        <button class="chip" style="justify-content:center;padding:12px;" onclick="pilihNominal(200000)">Rp200.000</button>
+        <button class="chip" style="justify-content:center;padding:12px;" onclick="pilihNominal(500000)">Rp500.000</button>
+      </div>
+
+      <div style="margin-top:12px;">
+        <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Atau masukkan nominal lain:</label>
+        <input type="number" id="customNominal" class="search" placeholder="Minimal Rp10.000" style="margin-bottom:8px;">
+      </div>
+
+      <button class="buy" style="width:100%;padding:14px;font-size:15px;margin-top:8px;" onclick="prosesDeposit()">Lanjutkan Pembayaran</button>
+    </div>
+  </section>
+
+  <!-- ================= HALAMAN BANTUAN ================= -->
+  <section id="page-bantuan" class="page-section" hidden>
+    <div class="card">
+      <div class="card-h"><h2>Bantuan & Kontak</h2></div>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 10px 0;">Hubungi kami jika ada kendala atau butuh bantuan.</p>
+      
+      <!-- WA BANTUAN -->
+      <a class="help-item" href="https://wa.me/6285998056428" target="_blank" rel="noopener">
+        <div class="help-icon wa">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <div><b>Hubungi Admin (Bantuan)</b><span>+62 859-9805-6428</span></div>
+      </a>
+
+      <a class="help-item" href="https://whatsapp.com/channel/0029Vb9Iuwn1nozF197w7i3u" target="_blank" rel="noopener">
+        <div class="help-icon channel">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><path d="M15 9l-5 3 5 3"/></svg>
+        </div>
+        <div><b>Saluran WhatsApp</b><span>Update info & promo terbaru</span></div>
+      </a>
+
+      <!-- TAMBAHAN MENU BANTUAN -->
+      <div class="help-item" onclick="alert('Jam Operasional Admin:\nSenin - Minggu\n08:00 - 22:00 WIB')">
+        <div class="help-icon info">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        <div><b>Jam Operasional</b><span>Senin - Minggu, 08:00 - 22:00 WIB</span></div>
+      </div>
+
+      <div class="help-item" onclick="alert('Panduan Singkat:\n1. Pilih layanan.\n2. Pilih negara.\n3. Pilih paket.\n4. Lanjut ke WhatsApp untuk pembayaran.')">
+        <div class="help-icon doc">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div><b>Panduan Singkat</b><span>Cara order & verifikasi</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- DIALOG PESANAN -->
+<dialog id="dlg">
+  <div class="dlg">
+    <h3>Ringkasan Pesanan</h3>
+    <div class="sum" id="sum"></div>
+
+    <div id="paketWrap" hidden>
+      <span class="paket-label">Pilih Paket</span>
+      <div class="paket-grid" id="paketList"></div>
+    </div>
+
+    <p style="font-size:12px;color:var(--muted);margin:0;" id="payNote"></p>
+    <div class="acts">
+      <a id="waBtn" class="wa-btn" href="#" target="_blank" rel="noopener">Lanjut ke WhatsApp</a>
+      <button type="button" id="closeBtn">Tutup</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" data-page="home" type="button">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </button>
+  <button class="nav-item" data-page="nokos" type="button">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Nokos
+  </button>
+  <button class="nav-item" data-page="deposit" type="button">
+    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+    Deposit
+  </button>
+  <button class="nav-item" data-page="bantuan" type="button">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Bantuan
+  </button>
+</nav>
+
+<script>
+// WA BELI / CHECKOUT
+var ADMIN_WA = "6287714913185"; 
+var PPN = 0.11;
+var MARKUP_FOTO = [1000,2000];
+var HARGA_LAIN = [1000,4000];
+var SOS_MAX = 20000;
+var SOS_MIN = 100;
+
+var BANNER_IMAGES = [
+  "https://i.postimg.cc/VNhYgpyC/image-ee295b54.jpg",
+  "https://i.postimg.cc/v8NW9H2X/image-d7d15073.jpg",
+  "https://i.postimg.cc/d06C0qTR/image-832901e1.jpg",
+  "https://i.postimg.cc/RFbncXd7/image-f760aea4.jpg"
+];
+
+var PAKET = [
+  {key:"hemat",   name:"Hemat",   add:0,     desc:"Harga asli"},
+  {key:"standar", name:"Standar", add:9000,  desc:"+Rp9.000"},
+  {key:"plus",    name:"Plus",    add:13000, desc:"+Rp13.000"},
+  {key:"premium", name:"Premium", add:18000, desc:"+Rp18.000"}
+];
+
+var KUSTOM = {
+  "Vercel": [
+    {country:"Indonesia", base:2500},
+    {country:"United States", base:3500},
+    {country:"Kosovo", base:4000},
+    {country:"United Kingdom", base:3200}
+  ],
+  "Dana": [
+    {country:"Indonesia", base:2000},
+    {country:"Gibraltar", base:34000}
+  ]
+};
+
+var FOTO = {
+"WhatsApp": "Tajikistan:930,Cameroon:2110,DR Congo:2240,Indonesia:2570,USA (virtual):2700,United Kingdom:3290,Ukraine:3290,Chile:3360,Timor-Leste:3420,Uzbekistan:3490,Philippines:3620,Vietnam:3680,Hong Kong:3680,Afghanistan:3680,Mauritania:3680,Nigeria:3750,South Africa:3950,Kenya:3950,Mozambique:3950,Palestine:3950,Canada:4080,Mali:4210,Sri Lanka:4210,Georgia:4210,Iraq:4210,Ivory Coast:4210,Slovenia:4210,Syria:4210,Bhutan:4470,Ghana:4470,Saudi Arabia:4600,Argentina:4730,Senegal:4860,Madagascar:4860,Colombia:4980,Morocco:4980,Nepal:5080,Costa Rica:5180,Dominican Republic:5180,Libya:5180,Sierra Leone:5180,South Sudan:5180,Tanzania:5180,Zimbabwe:5180,Angola:5380,Egypt:5480,Algeria:5480,Burkina Faso:5480,Burundi:5480,Ethiopia:5480,Honduras:5480,Lebanon:5480,Malawi:5480,Nicaragua:5480,Albania:5980,Barbados:5980,Guinea-Bissau:5980,Kyrgyzstan:5980,Netherlands:5980,Niger:5980,Guatemala:6080,Antigua and Barbuda:6280,Djibouti:6280,Lesotho:6280,Mongolia:6280,Rwanda:6280,Pakistan:6380,Grenada:6380,Haiti:6380,Cambodia:6480,Togo:6480,Macau:19330,Liberia:6580,Eswatini:7880,Comoros:6880,Namibia:6880,Uganda:7080,Bosnia and Herzegovina:12830,Belize:7280,Gibraltar:7280,Benin:7280,Guinea:7280,Serbia:7280,Tunisia:7280,Seychelles:7480,Kazakhstan:7480,Cape Verde:7580,Saint Kitts and Nevis:7580,Uruguay:7580,Bangladesh:7680,Botswana:7680,Guyana:7680,Sudan:7680,Central African Republic:7680,Venezuela:7780,Thailand:7780,Samoa:7880,Armenia:7980,Aruba:7980,Azerbaijan:7980,Bahamas:7980,Belarus:7980,Belgium:7980,Bulgaria:7980,Cayman Islands:7980,Chad:7980,Cuba:7980,Czech:7980,Dominica:7980,Qatar:7980,Republic of the Congo:13580,Reunion:7980,Romania:7980,Saint Lucia:7980,Saint Vincent and the Grenadines:7980,Salvador:7980,Sao Tome and Principe:7980,Sint Maarten:7980,Somalia:7980,Suriname:7980,Taiwan:7980,Liechtenstein:7980,Luxembourg:7980,Maldives:7980,Malta:7980,Martinique:7980,Mauritius:7980,Monaco:7980,Montenegro:7980,Montserrat:7980,Panama:7980,Papua New Guinea:12080,Puerto Rico:7980,Equatorial Guinea:7980,Eritrea:7980,French Guiana:7980,Gabon:7980,Gambia:7980,Guadeloupe:7980,Hungary:7980,Iceland:7980,Iran:7980,Ireland:7980,Jordan:7980,Laos:7980,Trinidad and Tobago:7980,Yemen:7980,Zambia:7980,Anguilla:7980,Greece:7980,Mexico:7980,Ecuador:8180,Latvia:8680,North Macedonia:8680,Paraguay:8680,Niue:8780,Portugal:9180,Jamaica:9380,Slovakia:9680,Japan:9680,Turkmenistan:10180,Estonia:10180,Fiji:10280,Malaysia:12330,New Caledonia:12580,China:12830,Israel:14830,Peru:15080,Brunei:16330,Kuwait:16580,Kosovo:17330,New Zealand:18080,United States:18080,Oman:18580,Brazil:19830,Germany:20580,Croatia:21580,Poland:23580,Finland:23830,India:23830,Austria:28080,France:32080,Australia:33580,Norway:39580,Cyprus:40080,Denmark:43080,Turkey:55580,Lithuania:56080,Spain:57580,Italy:62580,Bahrain:69580,Switzerland:78080,Sweden:86580,Singapore:119580,UAE:120580",
+"Google / YouTube": "Germany:130,South Africa:130,Afghanistan:130,Azerbaijan:130,Belgium:130,Syria:130,Tajikistan:130,Ukraine:130,Uzbekistan:130,Vietnam:130,Yemen:130,Zimbabwe:130,Laos:130,Madagascar:130,Malawi:130,Moldova:130,Mongolia:130,Morocco:130,Namibia:130,Nigeria:130,Pakistan:130,Senegal:130,Slovenia:130,Switzerland:130,Bolivia:130,Cambodia:130,Ecuador:130,Equatorial Guinea:130,Ethiopia:130,France:130,Iran:130,Ireland:130,Israel:130,Italy:130,Jamaica:130,Kazakhstan:130,Philippines:200,Indonesia:260,Kenya:260,Canada:500,USA (virtual):500,Brazil:650,Cameroon:650,United Kingdom:930,Central African Republic:1000,Chile:1060,Saudi Arabia:1060,Malaysia:1130,Portugal:1330,Colombia:1520,Thailand:1520,Algeria:1650,Hong Kong:1650,Mali:1650,Mexico:1650,Tanzania:1650,Argentina:1720,Bangladesh:1720,Bulgaria:1720,Denmark:1720,Georgia:1720,Myanmar:1720,Honduras:1780,Iraq:1780,Macau:1780,Mauritania:1780,Sierra Leone:1780,Liberia:1850,Niger:1850,Mozambique:1910,Timor-Leste:1980,Belize:2110,Ghana:2110,Ivory Coast:2110,Jordan:2110,Togo:2110,Uganda:2110,Botswana:2180,Netherlands:2240,Nepal:2310,Romania:2310,Sri Lanka:2310,Peru:2310,South Sudan:2310,Venezuela:2310,Angola:2310,Austria:2310,Croatia:2310,Serbia:2310,Greece:2370,Kosovo:2440,Egypt:2440,Poland:2440,Haiti:2500,Zambia:2500,Sweden:2500,Panama:2570,Czech:2640,Papua New Guinea:4730,Burundi:2770,Dominica:2770,Finland:2770,United States:2770,Guatemala:2900,China:2960,Benin:3030,Bosnia and Herzegovina:5880,Burkina Faso:3030,DR Congo:3030,Gibraltar:3030,Guinea:3030,Guinea-Bissau:3030,Luxembourg:3030,Martinique:3030,Republic of the Congo:4340,South Korea:3030,Spain:3030,Taiwan:3030,Bhutan:3090,Estonia:3090,Armenia:3160,Uruguay:3160,Eswatini:3220,Gabon:3220,Lesotho:3220,Paraguay:3220,Rwanda:3220,Mauritius:3290,India:3490,Sudan:3620,Niue:3680,Dominican Republic:3750,Eritrea:3750,Fiji:3750,New Zealand:3750,Reunion:3750,Lithuania:3950,Maldives:3950,Montserrat:3950,New Caledonia:3950,Nicaragua:3950,Puerto Rico:3950,Sao Tome and Principe:3950,Seychelles:3950,UAE:3950,Belarus:3950,Cape Verde:3950,Djibouti:3950,Anguilla:4210,Antigua and Barbuda:4210,Aruba:4210,Barbados:4210,Chad:4210,Costa Rica:4210,French Guiana:4210,Guadeloupe:4210,Guyana:4210,Saint Lucia:4210,Somalia:4210,Trinidad and Tobago:4210,Turkmenistan:4210,Lebanon:4340,Libya:4340,Cayman Islands:4340,Saint Vincent and the Grenadines:4340,Bahamas:4340,Brunei:4340,Grenada:4470,Suriname:4470,Qatar:4730,Saint Kitts and Nevis:4730,Salvador:4730,Tunisia:4730,Australia:4730,Bahrain:4730,Comoros:4730,Cuba:4730,Oman:4730,Cyprus:4980,Japan:4980,Latvia:4980,Palestine:4980,Samoa:4980,North Macedonia:5080,Albania:5080,Iceland:5080,Montenegro:5380,Slovakia:5580,Gambia:5780,Monaco:6080,Turkey:7280,Hungary:8080,Norway:8780,Singapore:8780,Liechtenstein:9280,Malta:10380",
+"Facebook": "Afghanistan:130,Azerbaijan:130,Belgium:130,Bolivia:130,Cambodia:130,Ecuador:130,Equatorial Guinea:130,Zimbabwe:130,Philippines:130,Pakistan:130,Senegal:130,Slovenia:130,South Africa:130,Switzerland:130,Syria:130,Tajikistan:130,Tanzania:130,Ukraine:130,Uzbekistan:130,Yemen:130,Kuwait:130,Kyrgyzstan:130,Laos:130,Madagascar:130,Malawi:130,Mali:130,Moldova:130,Mongolia:130,Morocco:130,Myanmar:130,Namibia:130,Nepal:130,Ethiopia:130,Georgia:130,Germany:130,Ghana:130,Guinea:130,Iran:130,Iraq:130,Ireland:130,Israel:130,Italy:130,Jamaica:130,Kazakhstan:130,Cameroon:200,Canada:200,Indonesia:260,Colombia:330,Chile:390,Vietnam:390,Palestine:500,Malaysia:550,Brazil:550,Egypt:550,Sudan:600,Kosovo:650,Ivory Coast:750,Tunisia:750,USA (virtual):750,Argentina:800,Timor-Leste:1460,Netherlands:800,Benin:930,Kenya:930,Liberia:930,Mozambique:930,Saudi Arabia:930,Algeria:1000,Greece:1000,Angola:1130,Denmark:1130,Portugal:1130,Bangladesh:1190,Belize:1190,Bhutan:1190,Bulgaria:1190,Estonia:1190,Honduras:1190,Poland:1190,Sri Lanka:1190,Togo:1190,Guinea-Bissau:1260,Mexico:1260,Romania:1260,Serbia:1260,Venezuela:1260,Armenia:1260,Macau:2310,Martinique:1330,Mauritania:1330,Mauritius:1330,Nigeria:1330,Norway:1330,Papua New Guinea:3220,Sierra Leone:1330,South Korea:1330,Taiwan:1330,Turkey:1330,Bosnia and Herzegovina:5080,Burkina Faso:1330,Central African Republic:1330,Croatia:1330,France:1330,India:1330,Lebanon:1330,Niger:1520,Austria:1590,United States:1650,China:1650,DR Congo:1650,Japan:1650,Malta:1650,Zambia:1650,Haiti:1650,Brunei:1720,Czech:1720,Guatemala:1720,Thailand:1720,Latvia:1780,Lithuania:1780,South Sudan:1780,Cape Verde:1850,Eswatini:2960,Hong Kong:1850,Maldives:1850,Somalia:1850,Republic of the Congo:2310,Saint Vincent and the Grenadines:1910,Spain:1910,UAE:1910,United Kingdom:1910,Uruguay:1910,Albania:1910,Costa Rica:1910,Fiji:1910,Lesotho:1910,Libya:1910,Gabon:1980,Rwanda:1980,Trinidad and Tobago:1980,Uganda:1980,Peru:2050,Samoa:2050,New Zealand:2180,Cyprus:2240,Paraguay:2310,Seychelles:2310,Belarus:2310,Chad:2310,Djibouti:2310,Dominica:2310,Gambia:2310,Guadeloupe:2310,Montserrat:2310,Nicaragua:2310,Anguilla:2370,Turkmenistan:2370,Niue:2440,Antigua and Barbuda:2770,Sao Tome and Principe:2770,Finland:2830,Aruba:2960,Eritrea:2960,Panama:2960,Reunion:2960,Slovakia:2960,Cayman Islands:3030,French Guiana:3030,New Caledonia:3030,Saint Lucia:3030,Hungary:3090,Puerto Rico:3220,Sweden:3420,Bahamas:3620,Barbados:3620,Burundi:3620,Guyana:3620,North Macedonia:3620,Dominican Republic:3750,Saint Kitts and Nevis:3950,Salvador:3950,Suriname:3950,Oman:3950,Qatar:3950,Australia:3950,Bahrain:3950,Botswana:3950,Comoros:3950,Cuba:3950,Grenada:3950,Montenegro:4080,Jordan:4210,Iceland:5080,Monaco:5080,Liechtenstein:5980,Gibraltar:8780,Singapore:8780,Luxembourg:16580",
+"TikTok": "Indonesia:130,France:130,Tajikistan:130,Ukraine:130,Uzbekistan:130,Vietnam:130,Yemen:130,Zimbabwe:130,Moldova:130,Mongolia:130,Morocco:130,Myanmar:130,Namibia:130,Netherlands:130,Nigeria:130,Pakistan:130,Senegal:130,Slovenia:130,South Africa:130,Switzerland:130,Iraq:130,Ireland:130,Israel:130,Italy:130,Jamaica:130,Kazakhstan:130,Kuwait:130,Kyrgyzstan:130,Laos:130,Madagascar:130,Malawi:130,Mauritius:130,Afghanistan:130,Bangladesh:130,Belgium:130,Bolivia:130,Cambodia:130,Ecuador:130,Equatorial Guinea:130,Ethiopia:130,Georgia:130,Iran:130,Brazil:200,Germany:200,Cameroon:200,Egypt:200,Kenya:200,Portugal:200,Azerbaijan:200,Philippines:260,United Kingdom:260,Colombia:260,Chile:330,Canada:330,Tanzania:330,Ivory Coast:330,Mozambique:330,Serbia:390,Spain:390,Croatia:500,Argentina:500,Timor-Leste:500,Sri Lanka:500,Venezuela:500,Ghana:550,Greece:550,India:600,Peru:600,Sweden:600,Angola:600,Haiti:600,USA (virtual):650,United States:650,Bhutan:650,Cyprus:650,Finland:650,Kosovo:650,Nepal:650,Tunisia:650,Czech:700,Estonia:700,Guatemala:700,Lithuania:700,Austria:700,Bulgaria:700,Poland:750,Romania:800,South Sudan:800,Sudan:800,Samoa:870,Cuba:930,Niue:1000,Denmark:1060,Burkina Faso:1130,Honduras:1190,Togo:1190,Algeria:1260,Libya:1260,Saudi Arabia:1260,Mexico:1330,Dominican Republic:1460,Thailand:1460,Malta:1520,Latvia:1590,Malaysia:1720,Armenia:1780,Guyana:2770,Papua New Guinea:2770,Syria:2770,Turkey:2770,Bahrain:2960,Botswana:2960,Republic of the Congo:2960,Gambia:2960,Lesotho:2960,Rwanda:2960,Salvador:2960,Sierra Leone:2960,Turkmenistan:2960,Bosnia and Herzegovina:3420,Costa Rica:3420,Antigua and Barbuda:3950,Aruba:3950,Australia:3950,Bahamas:3950,Barbados:3950,Belize:3950,Burundi:3950,North Macedonia:3950,Oman:3950,Panama:3950,Reunion:3950,Saint Kitts and Nevis:3950,Saint Vincent and the Grenadines:3950,Somalia:3950,Suriname:3950,Eswatini:3950,Uruguay:3950,Zambia:3950,Cape Verde:3950,Central African Republic:3950,Chad:3950,Comoros:3950,Djibouti:3950,Dominica:3950,French Guiana:3950,Grenada:3950,Guadeloupe:3950,Guinea:3950,Guinea-Bissau:3950,Jordan:3950,Brunei:4080,Cayman Islands:4080,Eritrea:4080,Gabon:4080,Macau:4080,Montserrat:4080,New Caledonia:4080,Qatar:4080,Sao Tome and Principe:4080,Seychelles:4080,Trinidad and Tobago:4080,Uganda:4080,Anguilla:4080,Benin:4730,Lebanon:4730,Mauritania:4730,Albania:5080,Iceland:5080,Monaco:5080,Montenegro:5080,New Zealand:6480,Gibraltar:8780,Japan:12080,Singapore:16580,Luxembourg:24330,Taiwan:39580,Norway:78080,Hong Kong:4980",
+"Shopee": "Jamaica:130,Kuwait:130,Mongolia:130,Pakistan:130,Senegal:130,South Africa:130,Tajikistan:130,Uzbekistan:130,Yemen:130,Bolivia:130,Azerbaijan:130,Israel:130,Bangladesh:130,Germany:130,Brazil:200,Poland:260,Tanzania:260,United Kingdom:260,Indonesia:330,Argentina:700,India:700,Comoros:750,Philippines:870,Kenya:870,Cuba:930,Gibraltar:1260,Haiti:1390,Spain:1590,Austria:1650,Vietnam:1650,Denmark:1650,United States:1720,Cameroon:1850,Timor-Leste:1910,Kosovo:2050,Thailand:2050,Zimbabwe:2050,Colombia:2240,Honduras:2310,Malawi:2310,Syria:2310,Togo:2310,Malaysia:2310,Croatia:2440,Paraguay:2440,Ghana:2640,Nigeria:2640,Portugal:2700,Morocco:2770,Cambodia:2960,France:2960,Estonia:3030,Georgia:3030,Slovenia:3030,Somalia:3160,Guinea:3220,Madagascar:3220,Peru:3290,Central African Republic:3420,Greece:3420,Hungary:3420,Sweden:3420,Ivory Coast:3490,New Zealand:3490,Sri Lanka:3490,Venezuela:3490,Turkmenistan:3550,Uganda:3550,Belize:3550,Eswatini:4860,Gabon:3550,Guinea-Bissau:3550,Iraq:3550,Lesotho:3550,Mauritania:3550,Namibia:3550,Niger:3550,Panama:3550,Papua New Guinea:4730,Rwanda:3550,Salvador:3550,Botswana:3550,DR Congo:3550,Ecuador:3550,Burkina Faso:3620,Sierra Leone:3620,Sudan:3620,Finland:3750,Japan:3750,Myanmar:3950,Tunisia:3950,Algeria:4080,Angola:4080,Dominican Republic:4080,Egypt:4080,Ethiopia:4080,Mali:4080,Ukraine:4080,Iran:4340,Barbados:4470,Bhutan:4470,Cayman Islands:4470,Djibouti:4470,Grenada:4470,Guadeloupe:4470,Saint Lucia:4470,China:4600,Mozambique:4600,Equatorial Guinea:4730,French Guiana:4730,Gambia:4730,Guyana:4730,Jordan:4730,Laos:4730,Lebanon:4730,Liberia:4730,Maldives:4730,Mauritius:4730,Montserrat:4730,New Caledonia:4730,Aruba:4730,Bahamas:4730,Bahrain:4730,Benin:4730,Brunei:4730,Burundi:4730,Cape Verde:4730,Costa Rica:4730,Dominica:4730,Oman:4730,Puerto Rico:4730,Republic of the Congo:4860,Reunion:4730,Sao Tome and Principe:4730,Seychelles:4730,South Sudan:4730,Suriname:4730,Turkey:6280,UAE:4730,Uruguay:4730,Montenegro:4860,Qatar:4860,Saint Kitts and Nevis:4860,Trinidad and Tobago:4860,Zambia:4860,Latvia:4980,Libya:4980,Anguilla:4980,Belgium:4980,Cyprus:4980,Eritrea:4980,Kazakhstan:5080,Monaco:5080,Nicaragua:5080,North Macedonia:5080,Norway:5080,Saudi Arabia:5080,Serbia:5080,Bosnia and Herzegovina:5180,Guatemala:5180,Ireland:5180,Kyrgyzstan:5180,Lithuania:5180,Luxembourg:5180,Macau:5180,Slovakia:5180,Switzerland:5180,Taiwan:5180,Afghanistan:5180,Australia:5180,Liechtenstein:5680,Niue:5980,Iceland:6080,Antigua and Barbuda:6180,Albania:6380,Saint Vincent and the Grenadines:7480,Singapore:28080",
+"Lazada": "Chile:450,Indonesia:550,Austria:550,Azerbaijan:550,Belize:550,Brazil:550,Burundi:550,Cambodia:550,Cameroon:550,China:550,Colombia:550,Croatia:550,Cuba:550,Czech:550,Denmark:550,France:550,Germany:550,Gibraltar:550,Israel:550,Ivory Coast:550,Jamaica:550,Kazakhstan:550,Kosovo:550,Latvia:550,Malta:550,Mongolia:550,Philippines:550,Portugal:550,Romania:550,Senegal:550,South Africa:550,Syria:550,Tajikistan:550,Togo:550,Ukraine:550,United Kingdom:550,United States:550,Uzbekistan:550,Vietnam:550,Kenya:600,Ireland:650,Greece:700,Slovenia:700,Thailand:750,Belgium:800,Japan:800,Mexico:800,Netherlands:800,Canada:870,Malaysia:870,Finland:930,Georgia:930,Nigeria:930,Spain:930,Sweden:930,Bangladesh:1000,Ghana:1000,Hong Kong:1000,Morocco:1000,Argentina:1060,Bolivia:1060,Moldova:1060,Myanmar:1060,Palestine:1060,Poland:1060,Venezuela:1060,Aruba:1130,Australia:1130,Bahamas:1130,Barbados:1130,Benin:1130,Bhutan:1130,Bosnia and Herzegovina:1130,Botswana:1130,Brunei:1130,Bulgaria:1130,Burkina Faso:1130,Cape Verde:1130,Afghanistan:1130,Albania:1130,Algeria:1130,Angola:1130,Anguilla:1130,Armenia:1130,Cayman Islands:1130,Chad:1130,Comoros:1130,Republic of the Congo:1190,Costa Rica:1130,Cyprus:1130,Djibouti:1130,Dominica:1130,Ecuador:1130,Egypt:1130,Equatorial Guinea:1130,Eritrea:1130,Estonia:1130,Ethiopia:1130,French Guiana:1130,Gabon:1130,Gambia:1130,Grenada:1130,Guadeloupe:1130,Guatemala:1130,Guinea:1130,Guyana:1130,Haiti:1130,Honduras:1130,Hungary:1130,India:1130,Iran:1130,Iraq:1130,Jordan:1130,Kuwait:1130,Kyrgyzstan:1130,Laos:1130,Lesotho:1130,Liberia:1130,Liechtenstein:1130,Lithuania:1130,Macau:1130,Madagascar:1130,Malawi:1130,Maldives:1130,Mali:1130,Mauritania:1130,Mauritius:1130,Monaco:1130,Montenegro:1130,Montserrat:1130,Mozambique:1130,Namibia:1130,Tunisia:1130,Turkey:1130,Turkmenistan:1130,Uganda:1130,Uruguay:1130,Yemen:1130,Zambia:1130,Zimbabwe:1130,Slovakia:1130,Somalia:1130,South Sudan:1130,Sri Lanka:1130,Sudan:1130,Suriname:1130,Eswatini:1130,Switzerland:1130,Tanzania:1130,Timor-Leste:1130,Peru:1130,Puerto Rico:1130,Reunion:1130,Rwanda:1130,Saint Lucia:1130,Salvador:1130,Samoa:1130,Sao Tome and Principe:1130,Serbia:1130,Seychelles:1130,Sierra Leone:1130,Singapore:1130,Nepal:1130,New Caledonia:1130,New Zealand:1130,Nicaragua:1130,Niger:1130,North Macedonia:1130,Norway:1130,Oman:1130,Pakistan:1130,Panama:1130,Papua New Guinea:1190,Paraguay:1130,Belarus:1190,Central African Republic:1190,Iceland:1190,Italy:1190,Libya:1190,Guinea-Bissau:1190",
+"Tokopedia": "Indonesia:130,Gibraltar:1260",
+"Spotify": "Indonesia:130,Brazil:130,Germany:130,Philippines:130,Tajikistan:130,Vietnam:130,United Kingdom:130,France:200,Thailand:330,Hong Kong:390,Spain:450,Cambodia:500,Laos:700,Timor-Leste:800,Malaysia:930,Myanmar:1000,Czech:1330,Netherlands:1330,Portugal:1460,Italy:1590,Poland:1590,Israel:1910,Sri Lanka:1910,Austria:1980,Kosovo:2050,Kenya:2240,Benin:2310,Peru:2440,Argentina:2500,Montenegro:2570,Zambia:2570,Japan:2770,United States:2900,Morocco:3090,Mexico:3290,Azerbaijan:4080,Guatemala:4080,Colombia:4080,Bangladesh:4210,Georgia:4340,Gibraltar:4340,Egypt:4470,Ethiopia:4470,Malawi:4470,Mozambique:4470,Tanzania:4470,South Africa:4600,Greece:4730,Slovenia:4730,Norway:4730,Honduras:4980,Estonia:4980,Barbados:5180,Costa Rica:5180,Liberia:5180,Albania:5180,Bulgaria:5180,Gambia:5180,Mauritania:5180,Mongolia:5180,Paraguay:5180,Nepal:5180,Senegal:5180,Afghanistan:5280,Armenia:5280,Eswatini:5280,India:5280,Algeria:5280,Burundi:5280,Haiti:5280,Maldives:5280,Moldova:5280,Pakistan:5280,Serbia:5280,Tunisia:5280,Botswana:5380,Ecuador:5380,Namibia:5380,Panama:5380,Taiwan:5380,Bahrain:5380,Cameroon:5380,Equatorial Guinea:5380,Jamaica:5380,Mauritius:5380,Saint Lucia:5380,Suriname:5380,Venezuela:5380,Madagascar:5380,North Macedonia:5380,Salvador:5380,Togo:5380,Burkina Faso:5580,Bolivia:5580,Cape Verde:5580,Finland:5880,Latvia:6280,Australia:6480,Cyprus:6580,Belgium:6580,Slovakia:7080,Hungary:7880,Angola:7980,Antigua and Barbuda:7980,Bhutan:7980,Bosnia and Herzegovina:7980,Chad:7980,Croatia:7980,Dominican Republic:7980,French Guiana:7980,Guinea-Bissau:7980,Ireland:7980,Ivory Coast:7980,Kyrgyzstan:7980,Lithuania:7980,Macau:7980,New Caledonia:7980,Oman:7980,Papua New Guinea:7980,Romania:7980,Rwanda:7980,Saint Kitts and Nevis:7980,Saint Vincent and the Grenadines:7980,Saudi Arabia:7980,Sweden:7980,Trinidad and Tobago:7980,Turkmenistan:7980,Uruguay:7980,Uzbekistan:7980,Puerto Rico:7980,Reunion:7980,Singapore:16580"
+};
+
+var DOMAIN = {
+  "whatsapp":"whatsapp.com","google / youtube":"youtube.com","facebook":"facebook.com","tiktok":"tiktok.com","shopee":"shopee.co.id","lazada":"lazada.co.id","tokopedia":"tokopedia.com","dana":"dana.id","spotify":"spotify.com",
+  "bca":"bca.co.id","bank jago":"jago.com","vercel":"vercel.com","roblox":"roblox.com","instagram":"instagram.com","telegram":"telegram.org","twitter (x)":"x.com","linkedin":"linkedin.com","pinterest":"pinterest.com","twitch":"twitch.tv","threads":"threads.net","snack video":"snackvideo.com","gopay":"gojek.com","ovo":"ovo.id",
+  "asetku":"asetku.co.id","bantu saku":"bantusaku.id","bukawarung":"bukawarung.id","bibit":"bibit.id","danamall":"danamall.com","cashtree":"cashtree.id","chacha market":"chachamarket.com","cpabuild":"cpabuild.com","curious cat":"curiouscat.xyz","discord":"discord.com","digicash":"digicash.id","dominos":"dominos.co.id","edot":"edot.id","exness":"exness.com","easycash":"easycash.co.id","fineasy":"fineasy.id","fanplus":"fanplus.id","fasset":"fasset.com","fastex":"fastex.io","foodpanda":"foodpanda.co.id","foodora":"foodora.id","ftx":"ftx.com","fu live":"fulive.tv","funcruss":"funcruss.com","clipclaps":"clipclaps.com","codashop":"codashop.com","dagangan online":"dagangan.co.id","damai":"damai.id","dana rupiah":"danarupiah.id","dana pinjam":"danapinjam.id","dancow":"nestle.co.id","danamon":"danamon.co.id","treasury":"treasury.id","trendyol":"trendyol.com","u by prodia":"prodia.co.id","vclloctive":"vcollective.com","venteny":"venteny.com","yara farmcare":"yara.co.id","yup":"yup.id","yuzu":"yuzu.id","360kredit":"360kredit.co.id","zalo":"zalo.me","zcity":"zcity.id","zenly":"zenly.com","coze":"coze.com","naver":"naver.com","zepto":"zepto.com","zipmex":"zipmex.com","zus coffee":"zuscoffee.com","astrapay":"astrapay.com",
+  "adidas":"adidas.co.id","adira":"adira.co.id","adobe":"adobe.com","ads media":"adsmedia.id","airasia":"airasia.com","airbnb":"airbnb.com","airwallex":"airwallex.com","ais play":"aisplay.com","aladin bank":"aladinbank.id","alchemy":"alchemy.com","alfagift":"alfagift.id","alibaba":"alibaba.com","alipay":"alipay.com","all access":"allaccess.id","allegro":"allegro.pl","allobank":"allobank.com","alodokter":"alodokter.com","alpha":"alpha.id","amazon":"amazon.com","aplikasi lain":"apps.com","ari10":"ari10.com","asiandating":"asiandating.com","askable":"askable.com","astra otoshop":"astratotoshop.co.id","astrapay":"astrapay.com","astronauts":"astronauts.id","ath hash":"ath.com","atlas earth":"atlasearth.com","atlas":"atlas.com","atome":"atome.com","auto desk":"autodesk.com","avonar forex":"avonar.com","axa mandiri":"axamandiri.com","axisnet":"axis.co.id","azmask":"azmask.com","badoo":"badoo.com","bagi":"bagi.id","bagis":"bagis.id","bajaj finserv":"bajajfinserv.in","bandinginaja":"bandinginaja.com","bank agi":"agi.co.id","bank bca":"bca.co.id","bank jago":"jago.com","bank jateng":"bankjateng.co.id","bang jamin":"bangjamin.id","bank of amerika":"bankofamerica.com","bata":"bata.com","bayardin":"bayardin.com","beboo":"beboo.id","belanjayuk":"belanjayuk.com","bengkel point":"bengkelpoint.id","bestfood":"bestfood.id","bigo live":"bigo.tv","biedronka":"biedronka.pl","bigbasket":"bigbasket.com","bima":"bima.id","binbin":"binbin.id","binomo":"binomo.com","bitget":"bitget.com","bitbank":"bitbank.com","bitrue":"bitrue.com","bitso":"bitso.com","bittime":"bittime.com","blackcatcard":"blackcatcard.com","blizzard":"blizzard.com","blibli":"blibli.com","blockdag":"blockdag.com","bluebird":"bluebird.id","boga group":"bogagroup.com","boku":"boku.com","booking.com":"booking.com","boom motorist":"boommotorist.id","bpjs kesehatan":"bpjs-kesehatan.go.id","brevo":"brevo.com","bprompt":"bprompt.com","bsblur":"bsblur.com","buka":"buka.id","bukukas":"bukukas.com","bukuwarung":"bukuwarung.com","bumble":"bumble.com","bunda":"bunda.id","bunq":"bunq.com","burgerking":"burgerking.co.id","burrito":"burrito.id","buy buy go":"buybuygo.id","buzbit":"buzbit.com","bybit":"bybit.com","byond":"byond.com",
+  "cairin":"cairin.id","caixa":"caixa.gov.br","cake defi":"cakedefi.com","calaxy":"calaxy.com","capping":"capping.id","cardb":"cardb.id","carousell":"carousell.com","carrefour":"carrefour.co.id","cashfazz":"cashfazz.com","cashzine":"cashzine.com","casward":"casward.com","cathay":"cathaypacific.com","cekaja":"cekaja.com","celebe":"celebe.com","ceria":"ceria.id","cgv":"cgv.id","chainge finance":"chainge.finance","chakra rewards":"chakra.io","chamet":"chamet.com","chanid":"chanid.id","cinepolis":"cinepolis.co.id","cici":"cici.id","cincau station":"cincaustation.com","claude academy":"claude.com","clubhouse":"clubhouse.com","cmb":"cmb.id","cmk club":"cmkclub.id","cms":"cms.id","codeium":"codeium.com","colonyid":"colony.id","communitygaming":"communitygaming.com","cosmart":"cosmart.id","cotti coffee":"cotti.com","course hero":"coursehero.com","craigslist":"craigslist.org","credinex":"credinex.id","cropwise":"cropwise.com","cryptonow":"cryptonow.com","cvb":"cvb.id","cvs":"cvs.com","cyber":"cyber.id","cimb niaga":"cimbniaga.co.id","citibank":"citibank.co.id",
+  "d4":"d4.id","damejidlo":"damejidlo.cz","danamon":"danamon.co.id","dapur coklat":"dapurcoklat.com","daya auto":"dayaauto.id","dealshare":"dealshare.in","deliveroo":"deliveroo.com","deloitte":"deloitte.com","dewupoison":"dewu.com","dhl":"dhl.com","digicash":"digicash.id","digitiket":"digitiket.com","dil mil":"dilmil.com","disney+":"disneyplus.com","discountbuy":"discountbuy.id","djisamsoe":"djisamsoe.com","dls":"dls.id","docusign":"docusign.com","doex":"doex.com","doku":"doku.com","dominos":"dominos.co.id","doordash":"doordash.com","doorverse":"doorverse.id","dostavista":"dostavista.com","dott":"dott.com","douyu":"douyu.com","dreamesh":"dreamesh.com","dreamcast":"dreamcast.com","dreamive":"dreamive.com","dttd-nft":"dttd.io","dynamix":"dynamix.id",
+  "easycash":"easycash.co.id","ebay":"ebay.com","ebpay":"ebpay.com","edfishery":"edfishery.id","eiger club":"eigeradventure.com","emos":"emos.id","eneba":"eneba.com","entice game":"enticegame.com","entrasol":"entrasol.com","escapefromtarkov":"escapefromtarkov.com","evadore":"evadore.com","ewallet":"ewallet.id","evermos":"evermos.com","exness":"exness.com","express money":"expressmoney.id","ezmatch":"ezmatch.com","eagle":"eagle.id","eazymoney":"eazymoney.id",
+  "factory":"factory.id","fanplus":"fanplus.id","fastex":"fastex.io","fastforward":"fastforward.id","fasset":"fasset.com","fawry":"fawry.com","fifgroup":"fifgroup.co.id","firebase":"firebase.google.com","fiverr":"fiverr.com","fizzo":"fizzo.com","flex":"flex.id","flip":"flip.id","flipkart":"flipkart.com","foodpanda":"foodpanda.co.id","fooma":"fooma.id","foodora":"foodora.id","fore coffee":"fore.coffee","freelancer":"freelancer.com","freelife":"freelife.id","fello":"fello.id","female daily":"femaledaily.com","fifada":"fifada.id","finplus":"finplus.id","fiserv":"fiserv.com","forex":"forex.com","ftx":"ftx.com","fu live":"fulive.tv","funcruss":"funcruss.com",
+  "galaxy":"galaxy.com","gopay":"gojek.com","gojek":"gojek.com","gooddoctor":"gooddoctor.co.id","goodmal":"goodmal.id","googlevoice":"voice.google.com","gotoko":"gotoko.id","greatday sunfish":"greatday.id","grindr":"grindr.com","grab":"grab.com","grabpoints":"grabpoints.com","grailed":"grailed.com","grosenia":"grosenia.id","grosirone":"grosirone.id","growtopia":"growtopia.com","creativeps":"creativeps.id","gudangada":"gudangada.com","guzman y gomez":"guzmanygomez.com","gyftr":"gyftr.com","grabfood":"grab.com","gofood":"gojek.com",
+  "halodoc":"halodoc.com","halokas":"halokas.id","hanwha life":"hanwhalife.co.id","hatata":"hatata.id","hammer club":"hammer.id","happn":"happn.com","hdi":"hdi.co.id","heat up":"heatup.id","hepsiburada":"hepsiburada.com","hijra bank":"hijrabank.co.id","hi.com":"hi.com","hinet":"hinet.id","hinge":"hinge.co","hive":"hive.id","hot 51":"hot51.com","home credit":"homecredit.co.id","hop":"hop.id","hopper":"hopper.com","hotel101":"hotel101.com","hsb investasi":"hsb.co.id","huawei":"huawei.com","hypermart":"hypermart.co.id","happyfresh":"happyfresh.id","hangry":"hangry.id","halokos":"halokos.id",
+  "ide":"ide.id","imperva":"imperva.com","hsbc":"hsbc.co.id","indodax":"indodax.com","indomaret":"indomaret.co.id","iflix":"iflix.com","investing":"investing.com","indosat":"indosat.com","jago":"jago.com","jne":"jne.co.id","jnt":"jet.co.id","jualo":"jualo.com","jubelio":"jubelio.com","julo":"julo.co.id","justdating":"justdating.com","joyit":"joyit.id","joyride":"joyride.id","j&texpress":"jet.co.id",
+  "kaito":"kaito.id","kakaotalk":"kakao.com","kalbe":"kalbe.co.id","kalcare":"kalcare.com","kami":"kami.id","kasir pro":"kasirpro.id","kaskus":"kaskus.co.id","keteraku":"keteraku.id","kaspro":"kaspro.id","kaya":"kaya.id","kbstar":"kbstar.co.id","kfcku":"kfc.co.id","keita":"keita.id","kimia farma":"kimiafarma.co.id","klik indomaret":"klikindomaret.com","klik nsc":"kliknsc.id","klikdokter":"klikdokter.com","kmplayer":"kmplayer.com","koin lab":"koinlab.com","kingkong":"kingkong.id","kitabeli":"kitabeli.com","kitabisa":"kitabisa.com","koinbasket":"koinbasket.com","koinpark":"koinpark.com","koinworks":"koinworks.com","kredivo":"kredivo.com",
+  "linkaja":"linkaja.id","matahari":"matahari.com","ovo":"ovo.id","traveloka":"traveloka.com","imkas":"imkas.id","immutable play":"immutable.com","imperial club":"imperial.id","internet money wallet":"internetmoney.io","ionos":"ionos.com","ipsos isay":"ipsosisay.com","indosaku":"indosaku.id","indriver":"indriver.com","intel sap":"intel.com","indogrosir":"indogrosir.co.id","indomaret pointku":"indomaret.co.id","inovasiktin":"inovasiktin.id","indopaket":"indopaket.id","incen":"incen.id","indiagold":"indiagold.id","indoba":"indoba.id","iqiyi":"iqiyi.com","iqos":"iqos.com","irctc":"irctc.co.in","iuiga":"iuiga.com","istyle":"istyle.id","itemku":"itemku.com","iti":"iti.id","ivaji":"ivaji.id",
+  "jalalive":"jalalive.com","jchicken":"jchicken.id","jd.id":"jd.id","jenius":"jenius.com","jiva":"jiva.co.id","jiva petani":"jiva.co.id","jogja kita":"jogjakita.id","jombingo":"jombingo.com","k24 klik":"k24klik.com","kaalapay":"kaalapay.com","kaggle":"kaggle.com","k-oins":"koins.id","k-ritel":"kritel.id","k-vision":"kvision.tv",
+  "lemo":"lemo.id","lensa":"lensa.id","lightchat":"lightchat.id","likee":"likee.video","lili":"lili.id","line":"line.me","line bank":"linebank.co.id","linode":"linode.com","lion parcel":"lionparcel.com","lita":"lita.id","litt":"litt.id","livu":"livu.me",
+  "mamba":"mamba.id","mantan":"mantan.id","manus":"manus.com","mapan":"mapan.id","mapclub":"mapclub.com","marinagent":"marinagent.com","maripinjam":"maripinjam.id","marktplaats":"marktplaats.nl","marugame":"marugame.id","masa finance":"masafinance.id","matok live":"matok.live","mcdonalds":"mcdonalds.co.id","meeff":"meeff.com","mi store":"mi.co.id","michat":"michat.com","myvalue":"myvalue.id","myxl":"myxl.co.id","myyogya":"myyogya.id",
+  "naver":"naver.com","neo bank":"neobank.id","neon":"neon.id","netease":"netease.com","neteller":"neteller.com","newchick":"newchick.id","nexparabola":"nexparabola.id","nextcool":"nextcool.id","nike":"nike.com","nimo tv":"nimo.tv","njusklalo":"njusklalo.id","nobuneo":"nobuneo.id","nutriclub":"nutriclub.co.id","nyxs":"nyxs.id",
+  "ocbc nisp":"ocbc.id","ojekbro":"ojekbro.id","okx":"okx.com","olacabs":"olacabs.com","oldubil":"oldubil.com","openai":"openai.com","order kuota":"orderkuota.com","oriflame":"oriflame.com","oscar shop":"oscarshop.id","otto":"otto.id","oyo":"oyorooms.com","ozon":"ozon.ru",
+  "paper.id":"paper.id","paperspace":"paperspace.com","papara":"papara.com","paprika":"paprika.id","payoneer":"payoneer.com","paysafe":"paysafe.com","paytm":"paytm.com","pediasure":"pediasure.co.id","pegadaian":"pegadaian.co.id","pegasus airlines":"flypgs.com","pelago":"pelago.com","pempem":"pempem.id","philips":"philips.co.id","pinhome":"pinhome.id","pinjam gampang":"pinjamgampang.id","pinjaman teman":"pinjamanteman.id","pinjamyuk":"pinjamyuk.id","pinjamwinwin":"pinjamwinwin.id","prodia":"prodia.co.id","proton.me":"proton.me","protonmail":"proton.me","pubg.bio":"pubg.com",
+  "realme store":"realme.com","recharge":"recharge.com","redbubble":"redbubble.com","rekeningku":"rekeningku.com","reku":"reku.id","relicdao":"relicdao.com","relx":"relx.com","riyu":"riyu.id","rozetka":"rozetka.com.ua","ruparupa":"ruparupa.com","rupiah cepat":"rupiahcepat.co.id","rush":"rush.id","rwgenting":"rwgenting.com",
+  "sagemaker":"aws.amazon.com","samsung":"samsung.com","sapo":"sapo.pt","sayurbox":"sayurbox.com","seamless ai":"seamless.ai","secret app":"secret.id","sgm gen maju":"sgm.co.id","share it":"shareit.com","shareparty":"shareparty.id","shopback":"shopback.co.id","snapchat":"snapchat.com","snkrdunk":"snkrdunk.com","starbucks":"starbucks.co.id","steam":"steampowered.com","superbank":"superbank.co.id","supercell":"supercell.com","superex":"superex.com",
+  "tapcoin":"tapcoin.id","tata neu":"tata neu","tataneu":"tatadigital.com","teken aja":"tekenaja.id","telz":"telz.id","teman prima":"temanprima.id","temu":"temu.com","tencent cloud":"tencent.com","tetanggaku":"tetanggaku.id","the fepi":"thefepi.id","thefork":"thefork.com","thgo":"thgo.id","things":"things.id","treasury":"treasury.id","trendyol":"trendyol.com",
+  "u by prodia":"prodia.co.id","vcollective":"vcollective.id","venteny":"venteny.com","vercel":"vercel.com","yara farmcare":"yara.co.id","yellow duck":"yellowduck.id","yemeksepeti":"yemeksepeti.com","yup":"yup.id","yuzu":"yuzu.id","zalo":"zalo.me","zcity":"zcity.id","zenly":"zenly.com","zeniva":"zeniva.id","zepetto":"zepetto.com","zepto":"zepto.com","zipmex":"zipmex.com","zoho":"zoho.com","zoombook":"zoombook.id","zus coffee":"zuscoffee.com"
+};
+
+var UMUM = ["Indonesia","Malaysia","Philippines","Thailand","Vietnam","Singapore","India","USA (virtual)","United States","United Kingdom","Canada","Germany","France","Spain","Brazil","Chile","Colombia","Mexico","Japan","South Africa","Kenya","Nigeria","Egypt","Saudi Arabia","Turkey","Hong Kong","Netherlands","Poland","Ukraine","Argentina"];
+var FOTO_ORDER = ["WhatsApp","Google / YouTube","Facebook","TikTok","Shopee","Lazada","Tokopedia","Dana","Spotify","Vercel"];
+var TXT = ["Adidas","Adira","Adobe","ADS Media","AirAsia","Airbnb","Airwallex","Ais PLAY","Aladin Bank","Alchemy","Alfagift","Alibaba","Alipay","All Access","Allegro","Allobank","Alodokter","Alpha","Amazon","Aplikasi Lain","Ari10","Asetku","AsianDating","Askable","Astra Otoshop","AstraPay","Astronauts","ATH Hash","Atlas Earth","Atlas","Atome","Auto Desk","Avonar Forex","Axa Mandiri","AxisNet","Azmask","Badoo","Bagi","Bagis","Bajaj Finserv","BandinginAja","Bank AGI","Bank BCA","Bank JAGO","Bank Jateng","Bang Jamin","Bank Of Amerika","Bata","Bayardin","Beboo","BelanjaYuk","Bengkel Point","BestFood","Bibit","BIGO LIVE","Biedronka","BigBasket","Bima","BinBin","Binomo","Bitget","BitBank","Bitrue","Bitso","Bittime","Blackcatcard","Blizzard","BliBli","Blockdag","BlueBird","BOGA GROUP","Boku","Booking.com","BOOM Motorist","BPJS Kesehatan","Brevo","Bprompt","Bsblur","Buka","BukuKas","BukuWarung","Bumble","Bunda","BunQ","BurgerKing","Burrito","Buy Buy Go","Buzbit","Bybit","BYOND","Cairin","CAIXA","Cake DeFi","Calaxy","Caping","CardB","Carousell","Carrefour","CashFAZZ","Cashtree","Cashzine","Casward","Cathay","CekAja","Celebe","Ceria","Cgv","Chacha Market","Chainge Finance","Chakra Rewards","Chamet","Chanid","Cinepolis","Cici","Cincau Station","Claude Academy","Clubhouse","CMB","CMK Club","CMS","Codashop","Codeium","ColonyID","CommunityGaming","Cosmart","Cotti Coffee","Course Hero","Coze","CPABuild","Craigslist","CrediNex","Cropwise","Cryptonow","Curious Cat","CvB","CVS","Cyber","CIMB Niaga","Citibank","D4","Dagangan","Damejidlo","DanaMall","Danamon","DanaPinjam","Danarupiah","Dancow","Dapur Coklat","Daya Auto","DealShare","Deliveroo","Deloitte","DewuPoison","DHL","DigiCash","DigiTiket","Dil Mil","Disney+","DiscountBuy","DjiSamsoe","DLS","DocuSign","DOEX","Doku","Dominos","DoorDash","Doorverse","Dostavista","Dott","Douyu","Dreamesh","Dreamcast","Dreamive","DTTD-NFT","DYNAMIX","EasyCash","EBay","EBpay","Edfishery","Edot","Eiger Club","EMOS","Eneba","Entice Game","Entrasol","EscapeFromTarkov","Evadore","Ewallet","Evermos","Exness","Express Money","EZMatch","Eagle","Eazymoney","Factory","FanPlus","FastEx","FastForward","Fasset","Fawry","FIFGroup","Firebase","Fiverr","Fizzo","Flex","Flip","Flipkart","FoodPanda","FOOMA","Foodora","Fore Coffee","Freelancer","FreeLife","Fello","Female Daily","FiFada","FinPlus","Fiserv","Forex","FTX","Fu Live","Funcruss","Galaxy","Gopay","Gojek","GoodDoctor","Goodmal","GoogleVoice","Gotoko","GreatDay SunFish","Grindr","Grab","Grabpoints","Grailed","Grosenia","GrosirOne","Growtopia","CreativePS","GudangAda","Guzman y Gomez","GyFTR","GrabFood","GoFood","Halodoc","HaloKas","Hanwha Life","Hatata","Hammer Club","Happn","HDI","Heat Up","Hepsiburada","Hijra bank","Hi.com","Hinet","Hinge","Hive","Hot 51","Home credit","HOP","Hopper","Hotel101","HSB Investasi","Huawei","Hypermart","HappyFresh","Hangry","HaloKos","IDE","Imperva","HSBC","Indodax","Indomaret","Iflix","Investing","Indosat","Jago","JNE","JNT","Jualo","Jubelio","JULO","Justdating","Joyit","Joyride","J&TExpress","Kaito","KakaoTalk","kalbe","KALCare","KAMI","Kasir Pro","Kaskus","Keteraku","KASPRO","Kaya","Kbstar","KFCKU","Keita","Kimia Farma","Klik Indomaret","Klik NSC","Klikdokter","KMPlayer","Koin Lab","KingKong","KitaBeli","KitaBisa","Koinbasket","Koinpark","KoinWorks","Kredivo","LinkAja","Matahari","OVO","Traveloka","ImKas","Immutable Play","Imperial Club","Internet money wallet","Ionos","Ipsos iSay","Instagram","Indosaku","Indriver","Intel SAP","Indogrosir","Indomaret Pointku","InovasiKtin","IndoPaket","Incen","IndiaGold","Indoba","Iqiyi","Iqos","IRCTC","IUIGA","iStyle","Itemku","Iti","Ivaji","JalaLive","JChicken","JD.id","JENIUS","Jiva","Jiva Petani","Jogja Kita","Jombingo","K24 Klik","Kaalapay","Kaggle","K-Oins","K-RITEL","K-Vision","Lemo","Lensa","Lightchat","Likee","Lili","LINE","Line Bank","Linode","Lion Parcel","Lita","Litt","Livu","Mamba","Mantan","Manus","MAPAN","Mapclub","Marinagent","MariPinjam","Marktplaats","Marugame","Masa Finance","Matok Live","Mcdonalds","MEEFF","Mi Store","Michat","MyValue","MyXL","Myyogya","Naver","Neo bank","Neon","Netease","Neteller","Newchick","Nexparabola","Nextcool","Nike","Nimo Tv","Njusklalo","Nobuneo","Nutriclub","NYXS","OCBC NISP","OjekBro","OKX","Olacabs","Oldubil","OpenAI","Order kuota","Oriflame","Oscar shop","Otto","OYO","OZON","Paper.id","Paperspace","Papara","Paprika","Payoneer","Paysafe","Paytm","Pediasure","Pegadaian","Pegasus Airlines","Pelago","PemPem","PHILIPS","Pinhome","Pinjam Gampang","Pinjaman Teman","Pinjamyuk","PinjamWinWin","Prodia","Proton.me","ProtonMail","Pubg.bio","Realme store","Recharge","Redbubble","Rekeningku","Reku","RelicDAO","Relx","Riyu","Rozetka","RupaRupa","Rupiah Cepat","Rush","Rwgenting","Sagemaker","Samsung","SAPO","SayurBox","Seamless AI","Secret App","SGM Gen Maju","Share It","ShareParty","Shopback","SnapChat","SnkrDunk","Starbucks","Steam","SuperBank","Supercell","SuperEx","Tapcoin","Tata Neu","Teken aja","Telz","Teman Prima","Temu","Tencent Cloud","Tetanggaku","The FEPI","TheFork","THGO","Things","Treasury","Trendyol","U by Prodia","VCollective","Venteny","Yara Farmcare","Yellow Duck","Yemeksepeti","Yup","Yuzu","Zalo","Zcity","Zenly","Zeniva","Zepetto","Zepto","ZIPMEX","Zoho","Zoombook","ZUS Coffee"];
+
+function parse(s){var o=[];s.split(",").forEach(function(p){var i=p.lastIndexOf(":");o.push({country:p.slice(0,i),base:+p.slice(i+1)})});return o}
+function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function step(lo,hi,key){var n=(hi-lo)/100+1;return lo+100*(hash(key)%n)}
+var fotoKeys={};FOTO_ORDER.forEach(function(k){fotoKeys[k.toLowerCase()]=1});
+var SERVICES=FOTO_ORDER.map(function(n){return{name:n,foto:true}});
+var seen={};FOTO_ORDER.forEach(function(n){seen[n.toLowerCase()]=1});
+seen["google"]=1;seen["youtube"]=1;
+TXT.forEach(function(n){var k=n.toLowerCase();if(seen[k])return;seen[k]=1;SERVICES.push({name:n,foto:false})});
+var rp=function(n){return "Rp"+Math.round(n).toLocaleString("id-ID")};
+
+/* =========================================================
+   HARGA DINAMIS
+   ========================================================= */
+var HARGA_AMP = 0.15;
+var transSeed = {};
+function dayKey(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
+function dynamicPrice(base, uniqueKey){
+  if(base <= 0) return 0;
+  var k = uniqueKey + "|" + dayKey() + "|" + (transSeed[uniqueKey]||0);
+  var h = hash(k);
+  var frac = (h % 2000) / 1000 - 1;
+  var variasi = frac * HARGA_AMP;
+  var harga = base * (1 + variasi);
+  return Math.max(100, Math.round(harga/100)*100);
+}
+function bumpTransSeed(uniqueKey){transSeed[uniqueKey]=(transSeed[uniqueKey]||0)+1;}
+
+function offers(svc){
+  if(KUSTOM[svc.name]){
+    return KUSTOM[svc.name].map(function(o){
+      var finalBase = o.base > 0 ? dynamicPrice(o.base, "otp|"+svc.name+"|"+o.country) : 0;
+      return {country:o.country, base:finalBase, tax:0, total:finalBase, uniqueKey:"otp|"+svc.name+"|"+o.country, kustom:true};
+    });
+  }
+  if(svc.foto){
+    return parse(FOTO[svc.name]).map(function(o){
+      var mk = step(MARKUP_FOTO[0], MARKUP_FOTO[1], svc.name+"|"+o.country);
+      var finalBase = dynamicPrice(o.base + mk, "otp|"+svc.name+"|"+o.country);
+      return {country:o.country, base:finalBase, tax:0, total:finalBase, uniqueKey:"otp|"+svc.name+"|"+o.country};
+    });
+  }
+  return UMUM.map(function(c){
+    var b = step(HARGA_LAIN[0], HARGA_LAIN[1], svc.name+"|"+c);
+    var finalBase = dynamicPrice(b, "otp|"+svc.name+"|"+c);
+    var tax = Math.ceil(finalBase*PPN/10)*10;
+    return {country:c, base:finalBase, tax:tax, total:finalBase+tax, uniqueKey:"otp|"+svc.name+"|"+c};
+  });
+}
+
+var state={svc:null,q:"",cq:"",all:false,list:[],tab:"otp",paket:"hemat",orderCtx:null};
+
+var ISO={"Indonesia":"ID","Philippines":"PH","Canada":"CA","Colombia":"CO","Thailand":"TH","USA (virtual)":"US","Chile":"CL","United Kingdom":"GB","Vietnam":"VN","Brazil":"BR","South Africa":"ZA","Malaysia":"MY","Kenya":"KE","Cameroon":"CM","United States":"US","Saudi Arabia":"SA","Hong Kong":"HK","Mexico":"MX","Singapore":"SG","Switzerland":"CH","Italy":"IT","Spain":"ES","Sweden":"SE","Turkey":"TR","Germany":"DE","India":"IN","France":"FR","Norway":"NO","Australia":"AU","Cyprus":"CY","Moldova":"MD","Denmark":"DK","Netherlands":"NL","Egypt":"EG","Ukraine":"UA","Argentina":"AR","Portugal":"PT","Japan":"JP","Haiti":"HT","Niger":"NE","China":"CN","Czech":"CZ","Zambia":"ZM","Luxembourg":"LU","Gibraltar":"GI","Greece":"GR","Angola":"AO","Poland":"PL","Peru":"PE","Samoa":"WS","Afghanistan":"AF","Azerbaijan":"AZ","Belgium":"BE","Algeria":"DZ","Mali":"ML","Tanzania":"TZ","Bangladesh":"BD","Bulgaria":"BG","Syria":"SY","Ghana":"GH","Nigeria":"NG","Bolivia":"BO","Jamaica":"JM","Kuwait":"KW","Comoros":"KM","Cuba":"CU","Austria":"AT","Mozambique":"MZ","Slovakia":"SK","Albania":"AL","Burkina Faso":"BF","Honduras":"HN","Libya":"LY","Togo":"TG","Dominican Republic":"DO","Malta":"MT","Latvia":"LV","Armenia":"AM","Estonia":"EE","Guatemala":"GT","Lithuania":"LT","Romania":"RO","Timor-Leste":"TL","Serbia":"RS","Croatia":"HR","Taiwan":"TW","Belize":"BZ","Burundi":"BI","Israel":"IL","Ivory Coast":"CI","Kazakhstan":"KZ","Kosovo":"XK","Mongolia":"MN","Senegal":"SN","Tajikistan":"TJ","Uzbekistan":"UZ","Finland":"FI","Georgia":"GE","Morocco":"MA","Ireland":"IE","Slovenia":"SI","Hungary":"HU","Madagascar":"MG","French Guiana":"GF","Kyrgyzstan":"KG","Macau":"MO","Oman":"OM","Rwanda":"RW","Turkmenistan":"TM","Uruguay":"UY","Puerto Rico":"PR","Cambodia":"KH","Aruba":"AW","Bahamas":"BS","Belarus":"BY","Cayman Islands":"KY","Chad":"TD","Dominica":"DM","Qatar":"QA","Republic of the Congo":"CG","Reunion":"RE","Saint Lucia":"LC","Saint Vincent and the Grenadines":"VC","Salvador":"SV","Sao Tome and Principe":"ST","Sint Maarten":"SX","Somalia":"SO","Suriname":"SR","Liechtenstein":"LI","Maldives":"MV","Martinique":"MQ","Mauritius":"MU","Monaco":"MC","Montenegro":"ME","Montserrat":"MS","Panama":"PA","Papua New Guinea":"PG","Equatorial Guinea":"GQ","Eritrea":"ER","Gabon":"GA","Gambia":"GM","Guadeloupe":"GP","Iceland":"IS","Iran":"IR","Jordan":"JO","Laos":"LA","Fiji":"FJ","New Caledonia":"NC","Bosnia and Herzegovina":"BA","Brunei":"BN","Antigua and Barbuda":"AG","Barbados":"BB","Botswana":"BW","Bahrain":"BH","Cape Verde":"CV","Costa Rica":"CR","Djibouti":"DJ","Ecuador":"EC","Eswatini":"SZ","Ethiopia":"ET","Grenada":"GD","Guinea":"GN","Guinea-Bissau":"GW","Guyana":"GY","Iraq":"IQ","Lebanon":"LB","Lesotho":"LS","Liberia":"LR","Malawi":"MW","Mauritania":"MR","Myanmar":"MM","Namibia":"NA","Nepal":"NP","Nicaragua":"NI","North Macedonia":"MK","Pakistan":"PK","Palestine":"PS","Paraguay":"PY","Sierra Leone":"SL","South Sudan":"SS","Sudan":"SD","Sri Lanka":"LK","Seychelles":"SC","Saint Kitts and Nevis":"KN","South Korea":"KR","Trinidad and Tobago":"TT","Tunisia":"TN","Uganda":"UG","UAE":"AE","Venezuela":"VE","Yemen":"YE","Zimbabwe":"ZW","Niue":"NU","Anguilla":"AI","Bhutan":"BT","Central African Republic":"CF","DR Congo":"CD","New Zealand":"NZ","Benin":"BJ"};
+function flag(c){var k=ISO[c];if(!k)return "🌐";return k.replace(/./g,function(x){return String.fromCodePoint(127397+x.charCodeAt(0))})}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+var LOGO_URL = {
+  "vercel":"https://i.postimg.cc/d1Q0Nr3n/images-(2).png",
+  "bca":"https://i.postimg.cc/ncm98VRh/images-(1).png",
+  "bank jago":"https://i.postimg.cc/7ZMC6srF/download-(3).png",
+  "dana":"https://i.postimg.cc/qqfT1DGs/dana.png",
+  "roblox":"https://i.postimg.cc/3NvCNshX/images.png",
+  "shopee":"https://i.postimg.cc/QN2Jwdg6/download-(2).png",
+  "lazada":"https://i.postimg.cc/GmjgNgbT/lazada.png",
+  "asetku":"https://i.postimg.cc/QxyBjhSq/asg0.webp",
+  "bantu saku":"https://i.postimg.cc/T3bPGmKd/bcx0.webp",
+  "bukawarung":"https://i.postimg.cc/jdwxQNQH/bukuwarung.png",
+  "bibit":"https://i.postimg.cc/Zn9SHt3v/bibit.png",
+  "danamall":"https://i.postimg.cc/tT60ntHk/dana-mall.jpg",
+  "cashtree":"https://i.postimg.cc/bw5F0DgG/Cash-Tree.webp",
+  "chacha market":"https://i.postimg.cc/C5v4FX6v/Chaca-Market.webp",
+  "cpabuild":"https://i.postimg.cc/C5Kj6JLz/cpabuild.png",
+  "curious cat":"https://i.postimg.cc/SRjMGsDQ/Curious-Cat.jpg",
+  "discord":"https://i.postimg.cc/rpcRPgfc/discord.png",
+  "digicash":"https://i.postimg.cc/R0Xhbm36/Digi-Cash.webp",
+  "dominos":"https://i.postimg.cc/5tNLtnL8/dominos.png",
+  "edot":"https://i.postimg.cc/TPw5xhvS/edot.jpg",
+  "exness":"https://i.postimg.cc/x1jcGq8Y/apa0.webp",
+  "easycash":"https://i.postimg.cc/zvjq3Sn7/easycash.png",
+  "fineasy":"https://i.postimg.cc/7YZkmz1y/Fineasy.webp",
+  "fanplus":"https://i.postimg.cc/y6vqgNMG/Fan-Plus.webp",
+  "fasset":"https://i.postimg.cc/gjBBMxpD/bsb0.webp",
+  "fastex":"https://i.postimg.cc/qRJb4sM9/Fast-Ex.jpg",
+  "foodpanda":"https://i.postimg.cc/GtBjmq0W/foodpanda.png",
+  "foodora":"https://i.postimg.cc/hjtrHK2g/abe0.webp",
+  "ftx":"https://i.postimg.cc/c6yf4WBw/FTX.webp",
+  "fu live":"https://i.postimg.cc/4ytB1B8v/Fu-Live.png",
+  "funcruss":"https://i.postimg.cc/vHszs7qS/funcruss.png",
+  "clipclaps":"https://i.postimg.cc/9FHhHSHN/Clip-Claps.png",
+  "codashop":"https://i.postimg.cc/sx7CZP5R/oe0.webp",
+  "dagangan online":"https://i.postimg.cc/ydwzdpgN/dagangan.webp",
+  "damai":"https://i.postimg.cc/XY34dP2v/apg0.webp",
+  "dana rupiah":"https://i.postimg.cc/h4xksrQ3/drh-(1).png",
+  "dana pinjam":"https://i.postimg.cc/dt6SNSsy/dana-pinjam-(1).png",
+  "dancow":"https://i.postimg.cc/RZPyhp2B/dancow.avif",
+  "danamon":"https://i.postimg.cc/4yTFqDH8/danamon.png",
+  "treasury":"https://i.postimg.cc/Jh5fm4m6/images.jpg",
+  "trendyol":"https://i.postimg.cc/KzwSppmR/images.png",
+  "u by prodia":"https://i.postimg.cc/cCyk8pst/images-(1).png",
+  "vclloctive":"https://i.postimg.cc/0yWtCMk2/download-(4).png",
+  "venteny":"https://i.postimg.cc/nzYB0g4r/images-(2).png",
+  "yara farmcare":"https://i.postimg.cc/NGdrF1p5/images-(3).png",
+  "yup":"https://i.postimg.cc/657TQF8P/download.jpg",
+  "yuzu":"https://i.postimg.cc/K8xz5j99/bqv0.webp",
+  "360kredit":"https://i.postimg.cc/tgrYJbNB/ayo0.webp",
+  "zalo":"https://i.postimg.cc/xCwjN1Jk/zalo.webp",
+  "zcity":"https://i.postimg.cc/3wW3Lv2P/Zcity.webp",
+  "zenly":"https://i.postimg.cc/fRRsL9qN/Zenly.png",
+  "coze":"https://i.postimg.cc/gk0tLHdW/aqf0.webp",
+  "naver":"https://i.postimg.cc/GmWXN0yV/naver.webp",
+  "zepto":"https://i.postimg.cc/R01LDW90/adi0.webp",
+  "zipmex":"https://i.postimg.cc/Jn6JfJF4/ZIPMEX.png",
+  "zus coffee":"https://i.postimg.cc/6QQCYYjJ/aik0.webp",
+  "astrapay":"https://i.postimg.cc/Qd87dfrc/astrapay.png"
+};
+
+function getServiceLogo(name){
+  var raw = String(name);
+  var n = raw.toLowerCase().trim();
+  var key = n;
+  if(n.indexOf("youtube") > -1) key = "google / youtube";
+  if(n.indexOf("twitter") > -1 || n === "x") key = "twitter (x)";
+  if(n.indexOf("snack") > -1)   key = "snack video";
+  if(n.indexOf("dana mall") > -1) key = "danamall";
+  if(n.indexOf("cash tree") > -1 || n.indexOf("cashtree") > -1) key = "cashtree";
+  if(n.indexOf("chacha") > -1)  key = "chacha market";
+  if(n.indexOf("bca") > -1)     key = "bank bca";
+  if(n.indexOf("jago") > -1)    key = "bank jago";
+  if(n.indexOf("astra") > -1)   key = "astrapay";
+  if(n.indexOf("360") > -1)     key = "360kredit";
+  if(n.indexOf("u by prodia") > -1) key = "u by prodia";
+  if(n.indexOf("vclloctive") > -1 || n.indexOf("v colle") > -1) key = "vclloctive";
+  if(n.indexOf("zus coffee") > -1) key = "zus coffee";
+  if(n.indexOf("fast ex") > -1 || n.indexOf("fastex") > -1) key = "fastex";
+  if(n.indexOf("cpabuild") > -1) key = "cpabuild";
+  if(n.indexOf("funcruss") > -1) key = "funcruss";
+  if(n.indexOf("clipclaps") > -1) key = "clipclaps";
+  if(n.indexOf("dagangan") > -1) key = "dagangan online";
+  if(n.indexOf("dana rupiah") > -1) key = "dana rupiah";
+  if(n.indexOf("dana pinjam") > -1) key = "dana pinjam";
+  if(n.indexOf("proton") > -1) key = "proton.me";
+  if(n.indexOf("j&t") > -1 || n.indexOf("jnt") > -1) key = "j&texpress";
+  if(n.indexOf("grab food") > -1 || n.indexOf("grabfood") > -1) key = "grabfood";
+  if(n.indexOf("go food") > -1 || n.indexOf("gofood") > -1) key = "gofood";
+  if(n.indexOf("cotti") > -1) key = "cotti coffee";
+
+  if(LOGO_URL[key]){
+    var fallback = faviconUrl(raw);
+    return '<img src="'+LOGO_URL[key]+'" alt="'+raw+'" loading="lazy" '
+      + 'onerror="this.onerror=null;this.src=\''+fallback+'\'">';
+  }
+
+  var dom = DOMAIN[key];
+  if(dom){
+    return '<img src="https://www.google.com/s2/favicons?domain='+encodeURIComponent(dom)+'&sz=128" alt="'+raw+'" loading="lazy" '
+      +'onerror="this.onerror=null;this.src=\'https://logo.clearbit.com/'+encodeURIComponent(dom)+'\'">';
+  }
+
+  var slug = raw.toLowerCase().replace(/[^a-z0-9]/g,"");
+  return '<img src="https://logo.clearbit.com/'+encodeURIComponent(slug)+'.com" alt="'+raw+'" loading="lazy" '
+    +'onerror="this.onerror=null;this.src=\'https://www.google.com/s2/favicons?domain='+encodeURIComponent(slug)+'.com&sz=128\'">';
+}
+function faviconUrl(name){
+  var slug = String(name).toLowerCase().replace(/[^a-z0-9]/g,"");
+  return "https://www.google.com/s2/favicons?domain="+encodeURIComponent(slug)+".com&sz=128";
+}
+
+/* =========================================================
+   ROUTING & UI LOGIC
+   ========================================================= */
+function setPage(page) {
+  document.querySelectorAll(".page-section").forEach(sec => sec.hidden = true);
+  document.getElementById("page-" + page).hidden = false;
+  
+  document.querySelectorAll(".nav-item").forEach(nav => {
+    nav.classList.toggle("active", nav.dataset.page === page);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll(".nav-item").forEach(nav => {
+  nav.addEventListener("click", () => {
+    setPage(nav.dataset.page);
+  });
+});
+
+function goToNokos(country) {
+  setPage("nokos");
+  if(country) {
+    state.cq = country;
+    document.getElementById("cSearch").value = country;
+    renderCountries();
+    if(window.innerWidth<=600) document.getElementById("countryPane").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+
+function initSlider(){
+  var track=document.getElementById("sliderTrack");
+  var dots=document.getElementById("sliderDots");
+  track.innerHTML=BANNER_IMAGES.map(function(src,i){
+    return '<div class="slide"><img src="'+src+'" alt="Banner '+(i+1)+'" loading="lazy"></div>';
+  }).join("");
+  dots.innerHTML=BANNER_IMAGES.map(function(_,i){
+    return '<span class="sdot'+(i===0?" active":"")+'" data-i="'+i+'"></span>';
+  }).join("");
+  function goTo(i){
+    var slides=track.children;
+    if(i<0)i=slides.length-1;
+    if(i>=slides.length)i=0;
+    track.scrollTo({left:slides[i].offsetLeft,behavior:"smooth"});
+  }
+  document.getElementById("btnPrev").addEventListener("click",function(){
+    var cur=Math.round(track.scrollLeft/track.clientWidth);
+    goTo(cur-1);
+  });
+  document.getElementById("btnNext").addEventListener("click",function(){
+    var cur=Math.round(track.scrollLeft/track.clientWidth);
+    goTo(cur+1);
+  });
+  track.addEventListener("scroll",function(){
+    var idx=Math.round(track.scrollLeft/track.clientWidth);
+    dots.querySelectorAll(".sdot").forEach(function(d,i){
+      d.classList.toggle("active",i===idx);
+    });
+  },{passive:true});
+  setInterval(function(){
+    if(!document.hidden && !document.getElementById("page-home").hidden){
+      var cur=Math.round(track.scrollLeft/track.clientWidth);
+      goTo(cur+1);
+    }
+  },5000);
+}
+
+/* =========================================================
+   RENDER FUNCTIONS (Nokos)
+   ========================================================= */
+function renderServices(){
+  var q=state.q.trim().toLowerCase();
+  var list=SERVICES.filter(function(s){return !q||s.name.toLowerCase().indexOf(q)>-1});
+  $("svcCount").textContent=list.length+" layanan";
+  var lim=(q||state.all)?list.length:24;
+  var show=list.slice(0,lim);
+  $("svcList").innerHTML=show.length?show.map(function(s){
+    var idx=SERVICES.indexOf(s);
+    var minPrice = Math.min.apply(null, offers(s).map(function(o){return o.total}));
+    var isSelected = state.svc && state.svc.name === s.name;
+    return '<button type="button" class="chip" data-i="'+idx+'" aria-pressed="'+isSelected+'"><div class="logo-svc">'+getServiceLogo(s.name)+'</div><span class="txt"><b>'+esc(s.name)+'</b><span class="sub">'+(s.foto?"Harga per negara":"Mulai "+rp(minPrice))+'</span></span></button>'}).join(""):'<div class="empty" style="grid-column:1/-1">Layanan tidak ditemukan.</div>';
+  var m=$("svcMore");
+  if(!q&&list.length>24){m.hidden=false;m.textContent=state.all?"Tampilkan lebih sedikit":"Lihat semua layanan ("+list.length+")"}else m.hidden=true;
+}
+function renderCountries(){
+  var s=state.svc;
+  if(!s) return;
+  state.list=offers(s).sort(function(a,b){return a.total-b.total});
+  var q=state.cq.trim().toLowerCase();
+  var list=state.list.filter(function(o){return !q||o.country.toLowerCase().indexOf(q)>-1||(q==="us"&&/united states|usa/i.test(o.country))});
+  
+  $("cTitle").textContent="Negara untuk "+s.name;
+  $("cCount").textContent=list.length+" negara";
+  $("cCount").style.display = "inline-block";
+  $("cEmpty").hidden = true;
+  $("cContent").hidden = false;
+
+  $("cNote").textContent="Harga dinamis — bisa naik/turun setiap hari & tiap transaksi.";
+  $("cList").innerHTML=list.length?list.map(function(o){
+    return '<div class="row"><div class="l"><span class="flag" aria-hidden="true">'+flag(o.country)+'</span><span class="nm">'+esc(o.country)+'</span></div><div class="foot"><span class="price">'+(o.total>0?rp(o.total):"-")+'</span><button type="button" class="buy" data-c="'+esc(o.country)+'">Beli</button></div></div>'}).join(""):'<div class="empty">Negara tidak ditemukan.</div>';
+}
+
+/* ==== PAKET UI ==== */
+function renderPaketList(){
+  var wrap=$("paketList");
+  wrap.innerHTML=PAKET.map(function(p){
+    var cls=p.add===0?"free":"";
+    var lbl=p.add===0?"Harga asli":"+"+rp(p.add);
+    return '<button type="button" class="paket" data-k="'+p.key+'" aria-pressed="'+(state.paket===p.key)+'">'
+      +'<div class="pname">'+p.name+'</div>'
+      +'<div class="padd '+cls+'">'+lbl+'</div>'
+      +'</button>';
+  }).join("");
+  wrap.querySelectorAll(".paket").forEach(function(b){
+    b.addEventListener("click",function(){
+      state.paket=b.dataset.k;
+      wrap.querySelectorAll(".paket").forEach(function(x){
+        x.setAttribute("aria-pressed",x.dataset.k===state.paket);
+      });
+      updateOrderTotal();
+    });
+  });
+}
+function getPaket(){return PAKET.filter(function(p){return p.key===state.paket})[0]||PAKET[0];}
+function updateOrderTotal(){
+  var ctx=state.orderCtx;
+  if(!ctx)return;
+  var paket=getPaket();
+  var hargaAsli = ctx.base + (ctx.tax||0);
+  var total = hargaAsli + paket.add;
+
+  var rows='<div><span>Layanan</span><span>'+esc(ctx.svc)+'</span></div>'
+    +'<div><span>Negara</span><span>'+esc(ctx.country)+'</span></div>'
+    +'<div><span>Harga asli</span><span>'+rp(hargaAsli)+'</span></div>';
+
+  if(ctx.tax>0){
+    rows+='<div><span style="font-size:12px;color:var(--muted)">&nbsp;&nbsp;• Nomor</span><span style="font-size:12px;color:var(--muted)">'+rp(ctx.base)+'</span></div>';
+    rows+='<div><span style="font-size:12px;color:var(--muted)">&nbsp;&nbsp;• PPN</span><span style="font-size:12px;color:var(--muted)">'+rp(ctx.tax)+'</span></div>';
+  }
+
+  if(paket.add>0){
+    rows+='<div><span>Paket '+paket.name+'</span><span>+'+rp(paket.add)+'</span></div>';
+  } else {
+    rows+='<div><span>Paket</span><span style="color:#16a34a;font-weight:600">Hemat (harga asli)</span></div>';
+  }
+
+  rows+='<div class="tot"><span>Total</span><span>'+rp(total)+'</span></div>';
+  $("sum").innerHTML=rows;
+
+  var msg="Halo ZidniNokos, saya mau beli nomor:\n"
+    +"Layanan: "+ctx.svc+"\n"
+    +"Negara: "+ctx.country+"\n"
+    +"Paket: "+paket.name+"\n"
+    +"Total: "+rp(total);
+
+  if(ctx.uniqueKey) bumpTransSeed(ctx.uniqueKey);
+
+  var waBtn=$("waBtn");
+  waBtn.href="https://wa.me/"+ADMIN_WA+"?text="+encodeURIComponent(msg);
+  waBtn.onclick=null;
+}
+
+function openOrder(country){
+  var o=state.list.filter(function(x){return x.country===country})[0];if(!o)return;
+  state.orderCtx={svc:state.svc.name, country:o.country, base:o.base, tax:o.tax||0, uniqueKey:o.uniqueKey};
+  state.paket="hemat";
+
+  $("paketWrap").hidden=false;
+  
+  $("payNote").textContent="Pesanan akan langsung diteruskan ke WhatsApp Admin. Pastikan data sudah benar.";
+  renderPaketList();
+  updateOrderTotal();
+  $("dlg").showModal();
+  $("dlg").onclose=function(){
+    renderCountries();
+    renderServices();
+  };
+}
+
+/* =========================================================
+   INIT & EVENTS
+   ========================================================= */
+var $=function(id){return document.getElementById(id)};
+
+// NOKOS Events
+$("svcList").addEventListener("click",function(e){
+  var b=e.target.closest(".chip");if(!b)return;
+  state.svc=SERVICES[+b.dataset.i];state.cq="";$("cSearch").value="";
+  renderServices();renderCountries();
+  if(window.innerWidth<=600)$("countryPane").scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("cList").addEventListener("click",function(e){var b=e.target.closest(".buy");if(b)openOrder(b.dataset.c)});
+$("svcSearch").addEventListener("input",function(e){state.q=e.target.value;renderServices()});
+$("cSearch").addEventListener("input",function(e){state.cq=e.target.value;renderCountries()});
+$("svcMore").addEventListener("click",function(){state.all=!state.all;renderServices()});
+$("closeBtn").addEventListener("click",function(){$("dlg").close()});
+
+// Fungsi Deposit Placeholder
+function pilihNominal(amount) {
+  document.getElementById("customNominal").value = amount;
+}
+function prosesDeposit() {
+  var nominal = document.getElementById("customNominal").value;
+  if(nominal < 10000) {
+    alert("Minimal deposit Rp10.000");
+    return;
+  }
+  // Di sini nanti akan memanggil API Payment Gateway
+  alert("Fitur deposit sedang dalam tahap pengembangan ke Payment Gateway.");
+}
+
+// Trending logos on load
+document.getElementById("trend-logo-shopee").innerHTML = getServiceLogo("Shopee");
+document.getElementById("trend-logo-dana").innerHTML = getServiceLogo("Dana");
+document.getElementById("trend-logo-telegram").innerHTML = getServiceLogo("Telegram");
+
+// Start
+initSlider();
+renderServices();
+setPage("home");
+</script>
+</body></html>
